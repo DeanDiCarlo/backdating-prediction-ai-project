@@ -17,6 +17,10 @@ All features must be available **on or before the decision date**. Never use cur
 - **Dean (GenAI):** SEC filing ingestion, historical availability filters, retrieval, grounded scoring, citations, and structured outputs. Work in `src/genai/`, `scripts/genai/`, and related tests.
 - **Shared:** `src/common/`, schemas, methodology, report, integration; changes require agreement.
 
+## Data flow
+
+`SEC submissions metadata → eligibility calculation → cached primary HTML → normalized section JSON → deterministic chunks → local Chroma index → cutoff-filtered passages → mock qualitative record`. Raw HTML, normalized JSON, selection manifests, Chroma files, and mock outputs stay in Git-ignored directories. The future quantitative provider joins through `(ticker, as_of_date)` records in `src/common/schemas.py`; no FactSet format is assumed or stored here.
+
 ## Initial data contract
 One row per `ticker` and `as_of_date` (ISO YYYY-MM-DD) with:
 - Quant: `ticker, as_of_date, quant_score` (optionally feature columns and `feature_available_at`).
@@ -37,3 +41,44 @@ Use a small fixed universe (e.g., 5–10 stocks), one historical decision date, 
 
 ## Midterm report checklist
 2–3 pages, 11-point single-column type, 1-inch margins; team and roles at top. Sections: I. Project Overview; II. Dataset; III. Methods + architecture diagram; IV. Preliminary Results; V. Next Steps. Never claim results that were not actually measured.
+
+
+## Historical SEC ingestion
+
+Use Python 3.11 or newer. Create a virtual environment and install the package and tests:
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e '.[dev]'
+```
+
+Set `SEC_USER_AGENT` to a descriptive application name and your working contact email (see `.env.example`). The command does not load `.env` automatically. The checked-in example is a placeholder and must be replaced for live SEC requests.
+
+```bash
+export SEC_USER_AGENT='FinSight Research your.actual.email@example.edu'
+python -m scripts.genai.ingest_filings --dry-run
+python -m scripts.genai.ingest_filings
+pytest -q
+```
+
+The pilot decision is **2022-01-03 at 09:30 America/New_York** by default. Override with `--ticker`, `--as-of`, or `--decision-time HH:MM:SS` if needed. A filing becomes eligible at the first regular XNYS open strictly after SEC acceptance, and its first eligible time must be on or before the decision cutoff. SEC submissions timestamps without offsets are interpreted as New York local time. Unknown or malformed timestamps are excluded. Simulated execution uses the next regular open strictly after the decision cutoff.
+
+SEC acceptance is a proxy for first public availability; the next-open buffer reduces but does not eliminate uncertainty. Studies needing a stronger point-in-time guarantee should independently archive first-seen times. Ambiguous local times during the autumn clock change are excluded.
+
+Raw primary documents are cached under `data/raw/sec_filings/`; processed JSON is under `data/processed/sec_filings/`, both named `{ticker}_{accession}`. Both directories are Git ignored. The JSON records source URL, accession, filing and acceptance dates, first eligible time, retrieval time, raw path, extracted sections, and missing-section status. A selection manifest, ineligible-metadata audit, and failure log are stored beside the processed JSON. The default command downloads at most one filing from the latest eligible 10-K plus subsequent 10-Q set. Use `--max-downloads 4` to cover more of that set; `--all-eligible` must be explicit. SEC requests are throttled to at most five per second per process and retried on transient errors. Older submissions index files are consulted where listed.
+
+HTML section extraction is heuristic: heading styles, tables of contents, inline XBRL, and non-HTML documents can cause missing or imperfect MD&A/Risk Factors text. Review extracted evidence before scoring. A failed filing is logged and does not stop the rest of a bounded batch.
+
+For the local retrieval and mock-scoring slice, install the optional retrieval dependencies and run:
+
+```bash
+python -m pip install -e '.[retrieval]'
+python -m scripts.genai.run_vertical_slice --max-downloads 1
+```
+
+This chunks only the selected manifest, persists Chroma under `data/chroma_db/`, filters on ticker, configured feature lookback, and first eligible time before similarity ranking, and writes a **neutral mock** result under `outputs/genai/`. The mock score is a pipeline demonstration, not a financial result. A local sentence-transformer model download is required on first run. The config records the 2016-01-01 to 2026-11-16 research window, daily price frequency, quarterly decisions, and 12-month target. The forward outcome is complete only when prices through the first trading session on or after the 12-month horizon from execution are observed; labels and backtests are not implemented in this milestone. Modern LLMs may contain future information from pretraining, so evidence grounding alone will not eliminate leakage in later real-provider experiments.
+
+Real SEC metadata is tested separately and only when both `RUN_SEC_INTEGRATION=1` and a real `SEC_USER_AGENT` are set. Run `pytest -m integration` after configuring them. The default test run uses mocked network responses.
+
+**Current verification:** 13 local tests pass and the opt-in network test is skipped. The tests include a persistent Chroma query with a future filing excluded. No live SEC filing was retrieved in this session because a working contact email for `SEC_USER_AGENT` has not yet been supplied. Actual SEC coverage and predictive performance remain unmeasured.

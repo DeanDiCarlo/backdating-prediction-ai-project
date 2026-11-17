@@ -5,7 +5,10 @@ __pycache__/
 .pytest_cache/
 .venv/
 *.pyc
+*.egg-info/
 data/raw/
 data/processed/
 outputs/
 .ipynb_checkpoints/
+
+data/chroma_db/
