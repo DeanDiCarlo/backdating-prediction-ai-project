@@ -1,0 +1,20 @@
+{
+  "status": "not_executed",
+  "blocker": "Preserved NVDA filing cache absent in this workspace.",
+  "questions": [
+    "What segment revenue growth did NVIDIA report for fiscal 2021?",
+    "What acquisition context affects interpretation of Compute & Networking growth?",
+    "What manufacturing dependencies and control risks are disclosed?",
+    "What competitive pressures are disclosed?",
+    "What evidence describes liquidity and funding needs?",
+    "Do these excerpts establish a calibrated probability of outperforming SPY?"
+  ],
+  "settings": {
+    "top_k": 5,
+    "chunk_words": 350,
+    "overlap_words": 50,
+    "cutoff": "2022-01-03T09:30:00-05:00"
+  },
+  "prompt": "Use only the supplied retrieved passages. Answer the question with passage IDs. Distinguish reported facts from inference. Abstain where evidence is insufficient. Do not assign an investment score.",
+  "review": "Dean reviews passage relevance and every generated claim against the source; record counts and failures separately."
+}
