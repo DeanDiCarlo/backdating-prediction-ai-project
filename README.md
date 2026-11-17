@@ -12,10 +12,8 @@ Does qualitative information extracted from historical SEC filings using GenAI p
 
 All features must be available **on or before the decision date**. Never use current filings to score historical dates.
 
-## Workstreams
-- **Nick (quantitative):** historical prices, point-in-time fundamentals, labels, baseline ranker, SPY and portfolio evaluation. Work in `src/quant/`, `scripts/quant/`, and related tests.
-- **Dean (GenAI):** SEC filing ingestion, historical availability filters, retrieval, grounded scoring, citations, and structured outputs. Work in `src/genai/`, `scripts/genai/`, and related tests.
-- **Shared:** `src/common/`, schemas, methodology, report, integration; changes require agreement.
+## Team collaboration
+Dean DiCarlo and Nicholas Stanis share responsibility for data quality, historical availability, GenAI design, model evaluation, financial validation, and reporting. Both review the integrated experiment and its claims. Coordinate task leads as work progresses and cross-review changes across the quantitative and GenAI components.
 
 ## Data flow
 
@@ -35,8 +33,8 @@ Use a small fixed universe (e.g., 5–10 stocks), one historical decision date, 
 
 ## Repo workflow
 - `main` is the stable integration branch.
-- `feature/quant-baseline` (Nick); `feature/genai-filings` (Dean).
-- One pull request per workstream; avoid editing the same files.
+- Use focused feature branches for quantitative and GenAI changes; either contributor can work across components.
+- Use focused pull requests and coordinate edits; review integration and experimental assumptions together.
 - Commit reproducible scripts, dependency/config instructions, small sanitized samples, tests and report figures; do not commit API keys, licensed Bloomberg/FactSet data, or bulk downloaded filings.
 
 ## Midterm report checklist
@@ -77,12 +75,16 @@ python -m pip install -e '.[retrieval]'
 python -m scripts.genai.run_vertical_slice --max-downloads 1
 ```
 
-This chunks only the selected manifest, persists Chroma under `data/chroma_db/`, filters on ticker, configured feature lookback, and first eligible time before similarity ranking, and writes a **neutral mock** result under `outputs/genai/`. The mock score is a pipeline demonstration, not a financial result. A local sentence-transformer model download is required on first run. The config records the 2016-01-01 to 2026-11-16 research window, daily price frequency, quarterly decisions, and 12-month target. The forward outcome is complete only when prices through the first trading session on or after the 12-month horizon from execution are observed; labels and backtests are not implemented in this milestone. Modern LLMs may contain future information from pretraining, so evidence grounding alone will not eliminate leakage in later real-provider experiments.
+This chunks only the selected manifest, persists Chroma under `data/chroma_db/`, filters on ticker, configured feature lookback, and first eligible time before similarity ranking, and writes a **neutral mock** result under `outputs/genai/`. The mock score is a pipeline demonstration, not a financial result. A local sentence-transformer model download is required on first run. The config records the 2016-01-01 to 2026-11-16 research window, daily price frequency, quarterly decisions, and 12-month target. The forward outcome is complete only when prices through the first trading session on or after the 12-month horizon from execution are observed; the single-cohort Yahoo pilot implements matched forward returns, while broader walk-forward evaluation remains planned. Modern LLMs may contain future information from pretraining, so evidence grounding alone will not eliminate leakage in later real-provider experiments.
 
 Real SEC metadata is tested separately and only when both `RUN_SEC_INTEGRATION=1` and a real `SEC_USER_AGENT` are set. Run `pytest -m integration` after configuring them. The default test run uses mocked network responses.
 
-**Current verification:** 16 local tests pass and the opt-in network test is skipped. The tests include a persistent Chroma query with a future filing excluded. No live SEC filing was retrieved in this session because a working contact email for `SEC_USER_AGENT` has not yet been supplied. Actual SEC coverage and predictive performance remain unmeasured.
+**Current verification (2026-11-17 UTC):** all 18 tests passed with live SEC enabled in Nick's workspace. The original Yahoo snapshot reproduced with a matching hash. One real eligible NVDA 10-K yielded 56 chunks; real MiniLM/Chroma retrieval and cutoff, ticker and stale-lookback exclusions passed. See [live evidence](docs/evidence/live-nvda.md) and the [manual grounded example](docs/evidence/manual-nvda-case.md). The example abstains from investment scoring and has agent self-review only. Dividend-adjustment verification and final human claim review remain open; no incremental GenAI investment value is established.
 
-## Midpoint handoff
+## Original midpoint draft
 
-Start with issue #3 and [the ordered execution handoff](docs/midpoint-handoff.md). The [report draft](docs/midterm-draft.md) maps current evidence to all five required sections and explicitly marks unfinished qualitative validation and contributor review. It is not a submission-ready PDF.
+The earlier draft and handoff are retained for provenance. Start with issue #3 and [the ordered execution handoff](docs/midpoint-handoff.md). The [report source](docs/midterm-draft.md), [three-page review PDF](docs/midterm-report.pdf) and [build instructions](docs/report-build.md) retain the measured evidence and its limitations. [Readiness](docs/midpoint-readiness.md) records the exact review artifact and outstanding contributor review. Submission is recorded separately and has not occurred.
+
+## Revised midpoint check-in
+
+See [the new source](docs/midpoint-checkin.md), [review PDF](docs/midpoint-checkin.pdf), [claim review ledger](docs/midpoint-review-ledger.md), and [remaining-project handoff](docs/final-project-handoff.md). The new experiment is specified but unexecuted because its preserved filing cache is unavailable here. Contributor review remains pending.
