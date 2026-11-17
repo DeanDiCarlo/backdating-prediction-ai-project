@@ -81,4 +81,8 @@ This chunks only the selected manifest, persists Chroma under `data/chroma_db/`,
 
 Real SEC metadata is tested separately and only when both `RUN_SEC_INTEGRATION=1` and a real `SEC_USER_AGENT` are set. Run `pytest -m integration` after configuring them. The default test run uses mocked network responses.
 
-**Current verification:** 13 local tests pass and the opt-in network test is skipped. The tests include a persistent Chroma query with a future filing excluded. No live SEC filing was retrieved in this session because a working contact email for `SEC_USER_AGENT` has not yet been supplied. Actual SEC coverage and predictive performance remain unmeasured.
+**Current verification:** 16 local tests pass and the opt-in network test is skipped. The tests include a persistent Chroma query with a future filing excluded. No live SEC filing was retrieved in this session because a working contact email for `SEC_USER_AGENT` has not yet been supplied. Actual SEC coverage and predictive performance remain unmeasured.
+
+## Midpoint handoff
+
+Start with issue #3 and [the ordered execution handoff](docs/midpoint-handoff.md). The [report draft](docs/midterm-draft.md) maps current evidence to all five required sections and explicitly marks unfinished qualitative validation and contributor review. It is not a submission-ready PDF.
