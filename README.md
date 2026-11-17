@@ -81,8 +81,8 @@ This chunks only the selected manifest, persists Chroma under `data/chroma_db/`,
 
 Real SEC metadata is tested separately and only when both `RUN_SEC_INTEGRATION=1` and a real `SEC_USER_AGENT` are set. Run `pytest -m integration` after configuring them. The default test run uses mocked network responses.
 
-**Current verification:** 16 local tests pass and the opt-in network test is skipped. The tests include a persistent Chroma query with a future filing excluded. No live SEC filing was retrieved in this session because a working contact email for `SEC_USER_AGENT` has not yet been supplied. Actual SEC coverage and predictive performance remain unmeasured.
+**Current verification (2026-11-17 UTC):** all 18 tests passed with live SEC enabled in Nick's workspace. The original Yahoo snapshot reproduced with a matching hash. One real eligible NVDA 10-K yielded 56 chunks; real MiniLM/Chroma retrieval and cutoff, ticker and stale-lookback exclusions passed. See [live evidence](docs/evidence/live-nvda.md) and the [manual grounded example](docs/evidence/manual-nvda-case.md). The example abstains from investment scoring and has agent self-review only. Dividend-adjustment verification and final human claim review remain open; no incremental GenAI investment value is established.
 
 ## Midpoint handoff
 
-Start with issue #3 and [the ordered execution handoff](docs/midpoint-handoff.md). The [report draft](docs/midterm-draft.md) maps current evidence to all five required sections and explicitly marks unfinished qualitative validation and contributor review. It is not a submission-ready PDF.
+Start with issue #3 and [the ordered execution handoff](docs/midpoint-handoff.md). The [report source](docs/midterm-draft.md), [three-page review PDF](docs/midterm-report.pdf) and [build instructions](docs/report-build.md) retain the measured evidence and its limitations. [Readiness](docs/midpoint-readiness.md) records the exact review artifact and outstanding contributor review. Submission is recorded separately and has not occurred.

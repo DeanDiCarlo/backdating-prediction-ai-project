@@ -23,5 +23,11 @@ text. The title is 14 points; diagram labels are 8 points. Inspect every page fo
 clipping, table readability, heading placement, missing glyphs and 2–3 page length
 after any source change. Keep evidence limitations and pending review visible.
 
+The final review draft is three pages, with explicit page breaks before Methods
+and Preliminary Results. PDF timestamps and document IDs are invariant so the
+same source and pinned renderer produce the same bytes. Rebuild twice and compare
+SHA-256 values before recording the review version. Vector figure labels are
+smaller than body text; inspect their legibility at normal zoom.
+
 Requirements, proposal and example PDFs were read locally. The example supplies
 structure only; its dataset and measured findings are unrelated to FinSight.

@@ -15,7 +15,7 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import (
-    Flowable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
+    Flowable, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,13 +32,14 @@ class Architecture(Flowable):
 
     def __init__(self):
         super().__init__()
-        self.width, self.height = 468, 146
+        self.width, self.height = 468, 192
 
     def draw(self):
         c = self.canv
         rows = [
-            (108, "Yahoo snapshot", "Momentum / top two", "Matched SPY returns", "MEASURED; REPRODUCED IN NICK'S WORKSPACE"),
-            (62, "SEC eligibility / HTML", "Sections / chunks / index", "Retrieval / mock score", "IMPLEMENTED; FIXTURE-TESTED"),
+            (154, "Yahoo snapshot", "Momentum / top two", "Matched SPY returns", "MEASURED; REPRODUCED IN NICK'S WORKSPACE"),
+            (108, "SEC eligibility / HTML", "Sections / chunks / index", "Five real passages", "LIVE RETRIEVAL VALIDATED"),
+            (62, "Manual eligible excerpts", "In-session Codex response", "Citations / abstention", "MANUAL EXAMPLE; AGENT SELF-REVIEW ONLY"),
             (16, "Real qualitative signals", "Join with quant scores", "Matched comparison", "PLANNED"),
         ]
         for y, *labels, status in rows:
@@ -60,7 +61,7 @@ class Architecture(Flowable):
 
 def build(source, output):
     body = ParagraphStyle("body", fontName="Times-Roman", fontSize=11,
-                          leading=12, spaceAfter=4)
+                          leading=13, spaceAfter=6)
     heading = ParagraphStyle("heading", parent=body, fontName="Times-Bold",
                              spaceBefore=7, spaceAfter=4, keepWithNext=True)
     title = ParagraphStyle("title", parent=heading, fontSize=14, leading=16,
@@ -100,6 +101,8 @@ def build(source, output):
             story.append(Paragraph(inline(line[2:]), title))
         elif line.startswith("## "):
             flush()
+            if line.startswith(('## III.', '## IV.')):
+                story.append(PageBreak())
             story.append(Paragraph(inline(line[3:]), heading))
         elif line.startswith("|"):
             if paragraph:
@@ -113,7 +116,7 @@ def build(source, output):
     output.parent.mkdir(parents=True, exist_ok=True)
     doc = SimpleDocTemplate(str(output), pagesize=letter, leftMargin=72,
                             rightMargin=72, topMargin=72, bottomMargin=72,
-                            title="FinSight midpoint report",
+                            title="FinSight midpoint report", invariant=1,
                             author="Dean DiCarlo; Nicholas Stanis")
     doc.build(story)
     print(output)
