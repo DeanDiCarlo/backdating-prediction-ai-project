@@ -10,6 +10,7 @@ dependencies = ["PyYAML>=6", "exchange-calendars>=4.5"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+quant = ["yfinance==0.2.66"]
 retrieval = ["chromadb>=1.0", "sentence-transformers>=3.0"]
 
 [tool.setuptools.packages.find]
