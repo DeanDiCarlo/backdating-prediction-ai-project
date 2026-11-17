@@ -1,0 +1,26 @@
+pilot:
+  tickers: [AAPL, MSFT, NVDA, JPM, XOM]
+  decision_date: 2022-01-03
+  decision_time: "09:30:00"
+  decision_timezone: America/New_York
+  vertical_slice_ticker: NVDA
+experiment:
+  start_date: 2016-01-01
+  end_date: 2026-11-16
+  feature_lookback_months: 24
+  forward_target_months: 12
+  benchmark: SPY
+  market_price_frequency: daily
+  portfolio_rebalance_frequency: quarterly
+  execution: next_regular_open
+  availability: next_regular_open_after_acceptance
+  trading_calendar: XNYS
+sec:
+  forms: [10-K, 10-Q]
+  request_delay_seconds: 0.2
+retrieval:
+  chunk_words: 350
+  overlap_words: 50
+  top_k: 5
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+primary_target: stock_forward_total_return_exceeds_spy_forward_total_return
