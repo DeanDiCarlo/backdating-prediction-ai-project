@@ -51,3 +51,13 @@ def test_missing_invalid_duplicate_and_incomplete(data):
         evaluate(data[data.date != '2023-01-04'], features, CUTOFF)
     with pytest.raises(ValueError):
         rank(pd.concat([data, data.iloc[[0]]]), ['A'], CUTOFF)
+
+
+def test_forward_outcomes_cannot_change_ranking(data):
+    before = rank(data, ['A', 'B', 'C'], CUTOFF)
+    changed = data.copy()
+    future = changed.date >= '2022-01-03'
+    changed.loc[future, ['adj_close', 'adj_open']] = 1_000_000
+    assert rank(changed, ['A', 'B', 'C'], CUTOFF) == before
+    # Ranking must also work when no future observations have been supplied.
+    assert rank(data[data.date < '2022-01-03'], ['A', 'B', 'C'], CUTOFF) == before
