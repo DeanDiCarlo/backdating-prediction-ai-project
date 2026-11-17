@@ -1,0 +1,19 @@
+{
+  "observations": [
+    {
+      "claim": "NVDA reported fiscal 2021 revenue growth of 29% in Graphics and 109% in Compute & Networking relative to fiscal 2020.",
+      "evidence_ids": ["E1", "E2"],
+      "kind": "historical_growth"
+    },
+    {
+      "claim": "Dependence on third parties for manufacturing and related production activities reduces NVDA's control over product quantity and quality.",
+      "evidence_ids": ["E3"],
+      "kind": "business_risk"
+    }
+  ],
+  "qualitative_score": null,
+  "abstentions": [
+    "The excerpts do not establish a calibrated probability of outperforming SPY.",
+    "No acquisition-free growth, valuation, future-return or investment recommendation is inferred."
+  ]
+}

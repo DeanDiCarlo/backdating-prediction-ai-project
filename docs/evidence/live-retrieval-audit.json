@@ -1,0 +1,36 @@
+{
+  "run_at_utc": "2026-11-17T02:56:22.887947+00:00",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581021000010/nvda-20210131.htm",
+  "accession": "0001045810-21-000010",
+  "accepted_at": "2021-02-26T22:03:14+00:00",
+  "eligible_at": "2021-03-01T14:30:00+00:00",
+  "raw_sha256": "280f822792eac7c1604863512cf850d2cb49473f2f1f63ce516280f22df6ba20",
+  "raw_bytes": 2511774,
+  "cache_reuse_without_network": true,
+  "section_words": {
+    "management_discussion": 6346,
+    "risk_factors": 10313
+  },
+  "chunk_count": 56,
+  "reopened_count": 56,
+  "chunks_by_section": {
+    "management_discussion": 21,
+    "risk_factors": 35
+  },
+  "query": "growth competitive position and business risks",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "retrieved_count": 5,
+  "model_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "retrieved_source_matches": 5,
+  "versions": {
+    "sentence-transformers": "6.3.0",
+    "transformers": "5.23.0",
+    "torch": "2.15.0",
+    "chromadb": "1.5.9"
+  },
+  "exclusion_counts": {
+    "wrong_ticker": 0,
+    "before_eligibility": 0,
+    "stale_one_month_lookback": 0
+  }
+}
