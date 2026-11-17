@@ -62,8 +62,13 @@ def main():
     pd.DataFrame(result['holdings']).to_csv(out / 'holdings.csv', index=False)
     pd.DataFrame([{'ticker': f.ticker, 'score': f.quant_score, 'available_at': f.feature_available_at.isoformat(), **f.metadata} for f in features]).to_csv(out / 'ranking.csv', index=False)
     labels = [(h['ticker'], h['forward_return']) for h in result['holdings']] + [('Portfolio', result['portfolio_return']), ('SPY', result['benchmark_return'])]
-    bars = ''.join(f'<text x="10" y="{40+i*45}">{name}</text><rect x="200" y="{25+i*45}" width="{abs(value)*300:.2f}" height="20" fill="{"#c45b4c" if value < 0 else "#438b79"}"/><text x="{210+abs(value)*300:.2f}" y="{40+i*45}">{value:.2%}</text>' for i, (name, value) in enumerate(labels))
-    (out / 'returns.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" font-family="sans-serif" font-size="14"><title>Single-cohort returns</title>{bars}</svg>')
+    zero = 320
+    bars = ''.join(
+        f'<text x="10" y="{40+i*45}">{name}</text>'
+        f'<rect x="{min(zero, zero+value*250):.2f}" y="{25+i*45}" width="{abs(value)*250:.2f}" height="20" fill="{"#c45b4c" if value < 0 else "#438b79"}"/>'
+        f'<text x="{zero+value*250 + (-8 if value < 0 else 8):.2f}" y="{40+i*45}" text-anchor="{"end" if value < 0 else "start"}">{value:.2%}</text>'
+        for i, (name, value) in enumerate(labels))
+    (out / 'returns.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" font-family="sans-serif" font-size="14"><title>Single-cohort returns</title><line x1="{zero}" y1="10" x2="{zero}" y2="200" stroke="#333"/>{bars}</svg>')
     print(json.dumps(result, indent=2))
 
 if __name__ == '__main__':
