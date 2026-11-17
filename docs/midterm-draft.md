@@ -2,7 +2,7 @@
 
 **Dean DiCarlo — SEC filings and GenAI; Nicholas Stanis — quantitative data and evaluation.**
 
-Working draft: quantitative results reproduced locally; contributor review, real filing-grounded example and final PDF layout remain pending.
+Review draft: the original quantitative snapshot has been reproduced by Codex in Nick's workspace; human claim review and a real filing-grounded example remain pending.
 
 ## I. Project Overview
 
@@ -24,7 +24,7 @@ Adjusted open is calculated as open multiplied by adjusted close divided by clos
 
 The SEC prototype treats a filing as eligible at the first regular market open strictly after acceptance, excludes unknown timestamps and applies the historical decision cutoff. It caches primary HTML, extracts sections heuristically and constructs provenance-bearing chunks. Configuration specifies a 24-month filing lookback, 350-word chunks with 50-word overlap, all-MiniLM-L6-v2 embeddings, local Chroma storage and top-five retrieval. These are configured settings, not evidence that live retrieval has been validated. The current scorer emits a neutral mock value of 0.5 when evidence exists; it is not a real model judgment.
 
-System diagram specification (render in final PDF):
+System architecture (rendered as a vector diagram in the PDF):
 
 ```text
 Yahoo snapshot -> momentum ranking -> top-two portfolio / matched SPY
@@ -48,10 +48,10 @@ The quantitative path has measured outputs; the SEC path is implemented and fixt
 
 The portfolio exceeded SPY by 27.77 percentage points; one of two selected stocks outperformed SPY, a 50% hit rate. The opposing holding outcomes show why the portfolio result should not be interpreted as consistent stock-selection success. One cohort and two holdings cannot establish robustness or support a meaningful time-series Sharpe estimate. This is a preliminary momentum comparison, not a quarterly backtest, a fundamentals-based model evaluation or evidence that GenAI improves selection.
 
-An agent rerun in the original workspace reproduced the saved snapshot's results and matching hash. The test suite returned 16 passed and one skipped; the skipped live SEC check means these tests do not establish actual filing coverage. Second-contributor reproduction still requires private transfer of the original CSV and metadata. A real filing-grounded LLM example and citation review remain pending; no qualitative result is claimed here.
+Codex independently reran the original CSV in Nick's Windows workspace after transfer of both snapshot and metadata. Its SHA-256 matched the original; all reported holdings and returns reproduced. Inspection confirmed 3,108 rows, zero duplicate ticker/date rows and no missing adjusted opens or closes. With Chroma installed, the merged-source suite returned 16 passed and one skipped (live SEC). A further four-test quantitative run passed in the reproduction PR, including a regression test that changes or removes future observations without changing rankings. These checks do not validate live filing coverage or dividend adjustments. A real filing-grounded LLM example and citation review remain pending; no qualitative result is claimed here.
 
 ## V. Next Steps
 
-First, complete second-contributor reproduction and a historically eligible filing case study with exact prompt, source passages, model identity, raw output and citation review. If automated retrieval is blocked, a manually selected example can demonstrate traceability while automated validation remains open. Resolve dividend-adjusted-series verification and record extraction or retrieval failures honestly.
+First, obtain contributor claim review and complete a historically eligible filing case study with exact prompt, source passages, model identity, raw output and citation review. If automated retrieval is blocked, a manually selected example can demonstrate traceability while automated validation remains open. Resolve dividend-adjusted-series verification and record extraction or retrieval failures honestly.
 
 Next, implement real structured scoring with abstention and adequate matched stock coverage. Freeze score combination before evaluation, obtain verified point-in-time fundamentals, and compare SPY, quantitative-only and augmented selection under identical universe, timing, weighting and cost rules. Broader walk-forward evaluation and robustness checks follow the matched pilot; incomplete forward outcomes must be excluded. Fine-tuning and additional data providers remain optional. The final project's central test is incremental value from qualitative signals, which the present momentum results do not measure.
