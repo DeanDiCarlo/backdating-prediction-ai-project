@@ -17,8 +17,6 @@ def chunk_document(record: dict, *, chunk_words: int, overlap_words: int) -> lis
         step = chunk_words - overlap_words
         for index, start in enumerate(range(0, len(words), step)):
             text = " ".join(words[start:start + chunk_words])
-            if not text:
-                continue
             seed = f"{record['accession_number']}|{section}|{index}|{text}"
             chunks.append({
                 "id": hashlib.sha256(seed.encode()).hexdigest(),
